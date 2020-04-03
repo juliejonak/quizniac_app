@@ -7,12 +7,14 @@ require('dotenv').config();
 
 // Sets up mongodb connection
 const mongoose = require('mongoose');
-mongoose.connect(process.env.MONGO_URL, err => {
-    if (err) {
-        console.log(`Error connecting mongo: ${err}`)
-    };
-    console.log('Db open.')
-});
+mongoose.connect(process.env.MONGO_URL)
+    .then( () => {
+        console.log("Connected to database.")
+    })
+    .catch( (err) => {
+        console.log(`Error connecting to db: ${err}`)
+    })
+
 const Card = require('./models/card');
 
 const server = express();
