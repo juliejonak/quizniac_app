@@ -1,4 +1,14 @@
 {
+  "name": "Quizniac",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "server": "nodemon index.js"
+  },
+  "repository": "",
+  "author": "Julie Jonak <juliejonak10@gmail.com>",
+  "license": "none",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
