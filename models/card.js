@@ -6,4 +6,4 @@ const cardModel = new Schema({
     answer: String
 });
 
-module.exports = mongoose.model('card', cardModel);
+module.exports = mongoose.model('Card', cardModel);

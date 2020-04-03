@@ -11,7 +11,7 @@ mongoose.connect(process.env.MONGO_URL, err => {
     if (err) throw err;
     console.log('Db open.')
 });
-const card = require('./models/card');
+const Card = require('./models/card');
 
 const server = express();
 
@@ -23,22 +23,43 @@ server.use(
 
 const PORT = process.env.PORT || 4300;
 
-const getCards = async () => {
-    const cards = await card.find({});
-    return cards;
-}
-
-server.get('/api/cards', (req, res) => {
-    getCards()
+server.get('/', (req, res) => {
+    Card.find({})
         .then( cards => {
             res.json(cards)
         })
         .catch( err => {
+            console.log(err)
             res.status(500).json({ message: `Could not fetch cards: ${err}`})
         })
+});
+
+server.post('/', (req, res) => {
+    const postedCard = req.body;
+    if (postedCard.answer && postedCard.clues.length === 10){
+        const newCard = new Card({ 
+            answer: postedCard.answer,
+            clues: postedCard.clues 
+        });
+        newCard.save()
+            .then( (cardID) => {
+                console.log(`${postedCard.answer} added successfully!`)
+                Card.findById(cardID)
+                    .then( card => {
+                        console.log(card)
+                        res.status(201).json(card[0])
+                    })
+            })
+            .catch(err => {
+                console.log(`Unable to add new card: ${err}`)
+            })
+    } else {
+        res.status(400).json({
+            message: "New card needs answer and clue fields filled."
+        })
+    }
 })
 
-server.listen( PORT, (err) => {
-    if (err) throw err;
+server.listen( PORT, () => {
     console.log(`Server is listening on ${PORT}`)
 });
