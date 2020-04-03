@@ -1,6 +1,7 @@
 import Card from "./Card";
 import React, { useState, useEffect } from "react";
 const axios = require("axios");
+// TODO: prevent inspect elements cheating: hint.visible ? hint.text : "Nice try, no cheating!";
 
 const HomePage = () => {
     const [isScore, setScore] = useState(0);

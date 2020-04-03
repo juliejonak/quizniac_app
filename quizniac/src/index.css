@@ -13,12 +13,13 @@ code {
 }
 
 .container {
+  margin: auto;
   min-height: 100vh;
   padding: 0 0.5rem;
   display: flex;
   flex-direction: column;
-  justify-content: left;
-  align-items: center;
+  text-align: left;
+  width: 60%;
 }
 
 h1 {
