@@ -31,10 +31,7 @@ const HomePage = () => {
   
     return (
       <div className="container">
-        <header>
           <title>Quizniac</title>
-          <link rel="icon" href="/quizniac.ico" />
-        </header>
   
         <main>
           <h1>Welcome to Quizniac!</h1>
