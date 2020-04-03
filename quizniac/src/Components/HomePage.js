@@ -11,7 +11,7 @@ const HomePage = () => {
     useEffect( () => {
         setLoading(true);
         const fetchData = async () => {
-            const res = await axios('https://quizniac.herokuapp.com/');
+            const res = await axios('https://quizniac.herokuapp.com/cards');
             setData(res.data);
             setLoading(false);
         }
