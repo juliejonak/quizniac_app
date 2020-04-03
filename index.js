@@ -7,7 +7,10 @@ require('dotenv').config();
 
 // Sets up mongodb connection
 const mongoose = require('mongoose');
-mongoose.connect(process.env.MONGO_URL)
+mongoose.connect(process.env.MONGO_URL, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true
+  })
     .then( () => {
         console.log("Connected to database.")
     })
@@ -15,7 +18,7 @@ mongoose.connect(process.env.MONGO_URL)
         console.log(`Error connecting to db: ${err}`)
     })
 
-const Card = require('./models/card');
+const Card = require('./models/card.js');
 
 const server = express();
 
@@ -38,31 +41,31 @@ server.get('/', (req, res) => {
     })
 });
 
-// server.post('/', (req, res) => {
-//     const postedCard = req.body;
-//     if (postedCard.answer && postedCard.clues.length === 10){
-//         const newCard = new Card({ 
-//             answer: postedCard.answer,
-//             clues: postedCard.clues 
-//         });
-//         newCard.save()
-//             .then( (cardID) => {
-//                 console.log(`${postedCard.answer} added successfully!`)
-//                 Card.findById(cardID)
-//                     .then( card => {
-//                         console.log(card)
-//                         res.status(201).json(card[0])
-//                     })
-//             })
-//             .catch(err => {
-//                 console.log(`Unable to add new card: ${err}`)
-//             })
-//     } else {
-//         res.status(400).json({
-//             message: "New card needs answer and clue fields filled."
-//         })
-//     }
-// })
+server.post('/', (req, res) => {
+    const postedCard = req.body;
+    if (postedCard.answer && postedCard.clues.length === 10){
+        const newCard = new Card({ 
+            answer: postedCard.answer,
+            clues: postedCard.clues 
+        });
+        newCard.save()
+            .then( (cardID) => {
+                console.log(`${postedCard.answer} added successfully!`)
+                Card.findById(cardID)
+                    .then( card => {
+                        console.log(card)
+                        res.status(201).json(card[0])
+                    })
+            })
+            .catch(err => {
+                console.log(`Unable to add new card: ${err}`)
+            })
+    } else {
+        res.status(400).json({
+            message: "New card needs answer and clue fields filled."
+        })
+    }
+})
 
 server.listen( PORT, () => {
     console.log(`Server is listening on ${PORT}`)
