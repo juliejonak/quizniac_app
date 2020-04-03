@@ -9,7 +9,8 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 mongoose.connect(process.env.MONGO_URL, {
     useUnifiedTopology: true,
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    useFindAndModify: false // Allows use of findOneAndUpdate
   })
     .then( () => {
         console.log("Connected to database.")
@@ -61,8 +62,39 @@ server.post('/', (req, res) => {
                 console.log(`Unable to add new card: ${err}`)
             })
     } else {
+        // TODO: Add more specific error handling by what info is missing
         res.status(400).json({
-            message: "New card needs answer and clue fields filled."
+            message: "A new card needs an answer and 10 clues."
+        })
+    }
+});
+
+server.put('/:id', (req, res) => {
+    const postedCard = req.body;
+    const {id} = req.params;
+
+    if (id && postedCard.answer && postedCard.clues.length === 10){
+        // {new: true} returns the updated card instead of auto-returning the old version
+        Card.findByIdAndUpdate({ _id: id}, postedCard, {new: true})
+            .then( (updatedCard) => {
+                if(updatedCard){
+                    res.status(201).json(updatedCard)
+                } else {
+                    res.status(404).json({
+                        message: "Invalid ID. Are you sure that's what you were looking to change?"
+                    })
+                }
+            })
+            .catch( err => {
+                res.status(500).json({
+                    message: `There was an error updating this card. Your changes were deemed unacceptable: ${err}`
+                })
+            })
+        }
+    else {
+        // TODO: Add more specific error handling by what info is missing
+        res.status(400).json({
+            message: "To update a card, send an answer and 10 clues."
         })
     }
 })
